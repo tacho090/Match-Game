@@ -15,6 +15,14 @@ $(document).ready(function(){
     });
   });
 
+  var list = ['0', '1', '2', '3', '4', '5', '6'];
+
+  for(i = 0; i < list.length; i++){
+    for(j=0; j < list.length; j++){
+      $(".col-" + (i+1).toString()).append("<img id='theImg' src=image/1.png/>");
+    }
+  }
+
   //Create rows. Append rows to columns
   for(i = 1; i < list.length+1; i++){
     for(j=0; j<7; j++){
