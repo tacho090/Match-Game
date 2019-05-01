@@ -19,10 +19,12 @@ $(document).ready(function(){
 
   for(i = 0; i < list.length; i++){
     for(j=0; j < list.length; j++){
-      $(".col-" + (i+1).toString()).append("<img id='theImg' src=image/1.png/>");
+      $(".col-" + (i+1).toString()).append("<img id='theImg' src=image/" + (Math.floor((Math.random() * 4) + 1)).toString() + ".png/>");
     }
   }
-
+  $(":image").css("width", "80%");
+  //<img id='theImg' src=image/" + (Math.floor((Math.random() * 4) + 1)).toString() + ".png/>
+  /*
   //Create rows. Append rows to columns
   for(i = 1; i < list.length+1; i++){
     for(j=0; j<7; j++){
@@ -73,5 +75,5 @@ $(document).ready(function(){
         console.log("*".repeat(10) + "NO coincide" + "*".repeat(10))
       }
     }
-  }
+  }*/
 });
