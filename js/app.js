@@ -36,8 +36,24 @@ $(document).ready(function(){
       $(".col-" + (i+1).toString()).append("<img id='theImg' src=image/" + (Math.floor((Math.random() * 4) + 1)).toString() + ".png/>");
     }
   }
-  $("^='col-'").css("height:680px");
-  $("img").attr({"width":"76%"});
 
+  $("div[class ^= 'col-']").attr({"style":"height:680px"});
+  $("img").attr({"width":"76%", "height":"97px"});
+
+  $(function(){
+    $("div[class ^= 'col-1']").find("img").each(function(){
+      // console.log($(this).attr("src"));
+    });
+  });
+
+  for(var i = 2; i<7; i++){
+    console.log($("div[class ^= 'col-1'] img:nth-child(" + i.toString() + ")"));
+    if($("div[class ^= 'col-1'] img:nth-child(" + i.toString() + ")").attr("src") == $("div[class ^= 'col-1'] img:nth-child(" + (i+1).toString() + ")").attr("src") && $("div[class ^= 'col-1'] img:nth-child(" + i.toString() + ")").attr("src") == $("div[class ^= 'col-1'] img:nth-child(" + (i-1).toString() + ")").attr("src")){
+      $("div[class ^= 'col-1'] img:nth-child(" + i.toString() + ")").detach();
+      $("div[class ^= 'col-1'] img:nth-child(" + (i+1).toString() + ")").detach();
+      $("div[class ^= 'col-1'] img:nth-child(" + (i-1).toString() + ")").detach();
+      console.log("match");
+    }
+  }
 
 });
