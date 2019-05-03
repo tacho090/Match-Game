@@ -71,10 +71,10 @@ $(document).ready(function(){
     for(var i = 1; i<8; i++){
       console.log('column number ' + i.toString() + ' passed');
       if($(".col-" + i.toString()).children().length < 7){
-        console.log('column number ' + i.toString() + ' passed');
-        let difference = 7 - ($(".col-" + i.toString()).children().length);
+        let resta = $(".col-" + i.toString()).children().length;
+        let difference = 7 - resta;
+        console.log(difference.toString() + ' dom elements dispatched to column ' + i.toString());
         for(var j = 0; j<difference; j++){
-          // console.log('amount of children of col-' + i.toString());
           $('.col-' + i.toString()).prepend("<img id='theImg' src='image/" + (Math.floor((Math.random() * 4) + 1)).toString() + ".png/'>");
         }
       }
