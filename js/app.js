@@ -36,15 +36,15 @@ $(document).ready(function(){
     }
   }
 
-  $('div:nth-child(2)').attr('id', 'droppable');
-  //$('div:nth-child(2)').addClass('ui-widget-content');
-  // $("img").addClass('ui-widget-content');
+  $('div.panel-tablero:first').attr('id', 'droppable');
+  $('div.panel-tablero:first').addClass('ui-widget-content');
+  $("img").addClass('draggable');//se agrega la clase y las imagenes adoptan fondo blanco
 
   //Droppable element
   //usar snap
   $( function() {
     console.log('entered droppable function');
-    $( "#draggable" ).draggable({ grid: [ 20, 20 ]});
+    $( ".draggable" ).draggable({ grid: [ 20, 20 ]});
     $( "#droppable" ).droppable({
       drop: function( event, ui ) {
         //Do something;
@@ -96,5 +96,31 @@ $(document).ready(function(){
     }
     $("img").attr({"width":"76%", "height":"97px"});
   }, 5000);
+
+
+  $(function(){
+    var timer = new Timer('1000 miliseconds');
+    var timer_text = $('#timer');
+    console.log(timer_text);
+    var number_0 = '01';
+    var number_1 = 59;
+    timer.bind(1000 * 1, function () {
+      console.log(number_1);
+      timer_text.text(number_0 + ':' + number_1.toString());
+      number_1 = number_1 - 1;
+      if(timer_text.text() == '00:00'){
+        alert('se acabó el tiempo');
+      }
+      if(number_1<0){
+        number_1 = 59;
+        number_0 = '00';
+      }
+
+    });
+
+    timer.start();
+  });
+
+
 
 });

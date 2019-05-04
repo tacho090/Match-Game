@@ -1,135 +1,141 @@
+/*
+ * Timer.js: A periodic timer for Node.js and the browser.
+ *
+ * Copyright (c) 2012 Arthur Klepchukov, Jarvis Badgley, Florian SchÃ¤fer
+ * Licensed under the BSD license (BSD_LICENSE.txt)
+ *
+ * Version: 0.0.1
+ *
+ */
 (function (root, factory) {
-  'use strict'
-  if (typeof define === 'function' && define.amd) define([], factory)
-  else if (typeof exports === 'object') module.exports = factory()
-  else root.Timer = factory()
-}(this, function () {
-  'use strict'
-
-  var defaultOptions = {
-    tick    : 1,
-    onstart : null,
-    ontick  : null,
-    onpause : null,
-    onstop  : null,
-    onend   : null
-  }
-
-  var Timer = function (options) {
-    if (!(this instanceof Timer)) return new Timer(options)
-    this._ = {
-      id       : +new Date,
-      options  : {},
-      duration : 0,
-      status   : 'initialized',
-      start    : 0,
-      measures : []
+    if (typeof exports === 'object') {
+        module.exports = factory();
+    } else if (typeof define === 'function' && define.amd) {
+        define(factory);
+    } else {
+        root.Timer = factory();
     }
-    for (var prop in defaultOptions) this._.options[prop] = defaultOptions[prop]
-    this.options(options)
-  }
-
-  Timer.prototype.start = function (duration) {
-    if (!+duration && !this._.duration) return this
-    duration && (duration *= 1000)
-    if (this._.timeout && this._.status === 'started') return this
-    this._.duration = duration || this._.duration
-    this._.timeout = setTimeout(end.bind(this), this._.duration)
-    if (typeof this._.options.ontick === 'function')
-      this._.interval = setInterval(function () {
-        trigger.call(this, 'ontick', this.getDuration())
-      }.bind(this), +this._.options.tick * 1000)
-    this._.start = +new Date
-    this._.status = 'started'
-    trigger.call(this, 'onstart', this.getDuration())
-    return this
-  }
-
-  Timer.prototype.pause = function () {
-    if (this._.status !== 'started') return this
-    this._.duration -= (+new Date - this._.start)
-    clear.call(this, false)
-    this._.status = 'paused'
-    trigger.call(this, 'onpause')
-    return this
-  }
-
-  Timer.prototype.stop = function () {
-    if (!/started|paused/.test(this._.status)) return this
-    clear.call(this, true)
-    this._.status = 'stopped'
-    trigger.call(this, 'onstop')
-    return this
-  }
-
-  Timer.prototype.getDuration = function () {
-    if (this._.status === 'started')
-      return this._.duration - (+new Date - this._.start)
-    if (this._.status === 'paused') return this._.duration
-    return 0
-  }
-
-  Timer.prototype.getStatus = function () {
-    return this._.status
-  }
-
-  Timer.prototype.options = function (option, value) {
-    if (option && value) this._.options[option] = value
-    if (!value && typeof option === 'object')
-      for (var prop in option)
-        if (this._.options.hasOwnProperty(prop))
-          this._.options[prop] = option[prop]
-    return this
-  }
-
-  Timer.prototype.on = function (option, value) {
-    if (typeof option !== 'string' || typeof value !== 'function') return this
-    if (!(/^on/).test(option))
-      option = 'on' + option
-    if (this._.options.hasOwnProperty(option))
-      this._.options[option] = value
-    return this
-  }
-
-  Timer.prototype.off = function (option) {
-    if (typeof option !== 'string') return this
-    option = option.toLowerCase()
-    if (option === 'all') {
-      this._.options = defaultOptions
-      return this
+})(this, function () {
+    function timeStringToMilliseconds(timeString) {
+        if (typeof timeString === 'string') {
+            if (isNaN(parseInt(timeString, 10))) {
+                timeString = '1' + timeString;
+            }
+            var match = timeString
+                .replace(/[^a-z0-9\.]/g, '')
+                .match(/(?:(\d+(?:\.\d+)?)(?:days?|d))?(?:(\d+(?:\.\d+)?)(?:hours?|hrs?|h))?(?:(\d+(?:\.\d+)?)(?:minutes?|mins?|m\b))?(?:(\d+(?:\.\d+)?)(?:seconds?|secs?|s))?(?:(\d+(?:\.\d+)?)(?:milliseconds?|ms))?/);
+            if (match[0]) {
+                return parseFloat(match[1] || 0) * 86400000 +  // days
+                       parseFloat(match[2] || 0) * 3600000 +   // hours
+                       parseFloat(match[3] || 0) * 60000 +     // minutes
+                       parseFloat(match[4] || 0) * 1000 +      // seconds
+                       parseInt(match[5] || 0, 10);            // milliseconds
+            }
+            if (!isNaN(parseInt(timeString, 10))) {
+                return parseInt(timeString, 10);
+            }
+        }
+        if (typeof timeString === 'number') {
+            return timeString;
+        }
+        return 0;
     }
-    if (!(/^on/).test(option)) option = 'on' + option
-    if (this._.options.hasOwnProperty(option))
-      this._.options[option] = defaultOptions[option]
-    return this
-  }
-
-  Timer.prototype.measureStart = function (label) {
-    this._.measures[label || ''] = +new Date
-    return this
-  }
-
-  Timer.prototype.measureStop = function (label) {
-    return +new Date - this._.measures[label || '']
-  }
-
-  function end () {
-    clear.call(this)
-    this._.status = 'stopped'
-    trigger.call(this, 'onend')
-  }
-
-  function trigger (event) {
-    var callback = this._.options[event],
-      args = [].slice.call(arguments, 1)
-    typeof callback === 'function' && callback.apply(this, args)
-  }
-
-  function clear (clearDuration) {
-    clearTimeout(this._.timeout)
-    clearInterval(this._.interval)
-    if (clearDuration === true) this._.duration = 0
-  }
-
-  return Timer
-}))
+    function millisecondsToTicks(milliseconds, resolution) {
+        return parseInt(milliseconds / resolution, 10) || 1;
+    }
+    function Timer(resolution) {
+        if (this instanceof Timer === false) {
+            return new Timer(resolution);
+        }
+        this._notifications = [];
+        this._resolution = timeStringToMilliseconds(resolution) || 1000;
+        this._running = false;
+        this._ticks = 0;
+        this._timer = null;
+        this._drift = 0;
+    }
+    Timer.prototype = {
+        start: function () {
+            var self = this;
+            if (!this._running) {
+                this._running = !this._running;
+                this._timer = setTimeout(function loopsyloop() {
+                    self._ticks++;
+                    for (var i = 0, l = self._notifications.length; i < l; i++) {
+                        if (self._notifications[i] && self._ticks % self._notifications[i].ticks === 0) {
+                            self._notifications[i].callback.call(self._notifications[i], { ticks: self._ticks, resolution: self._resolution });
+                        }
+                    }
+                    if (self._running) {
+                        self._timer = setTimeout(loopsyloop, self._resolution + self._drift);
+                        self._drift = 0;
+                    }
+                }, this._resolution + this._drift);
+                this._drift = 0;
+            }
+            return this;
+        },
+        stop: function () {
+            if (this._running) {
+                this._running = !this._running;
+                clearTimeout(this._timer);
+            }
+            return this;
+        },
+        reset: function () {
+            this.stop();
+            this._ticks = 0;
+            return this;
+        },
+        clear: function () {
+            this.reset();
+            this._notifications = [];
+            return this;
+        },
+        ticks: function () {
+            return this._ticks;
+        },
+        resolution: function () {
+            return this._resolution;
+        },
+        running: function () {
+            return this._running;
+        },
+        bind: function (when, callback) {
+            if (when && callback) {
+                var ticks = millisecondsToTicks(timeStringToMilliseconds(when), this._resolution);
+                this._notifications.push({
+                    ticks: ticks,
+                    callback: callback
+                });
+            }
+            return this;
+        },
+        unbind: function (callback) {
+            if (!callback) {
+                this._notifications = [];
+            } else {
+                for (var i = 0, l = this._notifications.length; i < l; i++) {
+                    if (this._notifications[i] && this._notifications[i].callback === callback) {
+                        this._notifications.splice(i, 1);
+                    }
+                }
+            }
+            return this;
+        },
+        drift: function (timeDrift) {
+            this._drift = timeDrift;
+            return this;
+        }
+    };
+    Timer.prototype.every = Timer.prototype.bind;
+    Timer.prototype.after = function (when, callback) {
+        var self = this;
+        Timer.prototype.bind.call(self, when, function fn () {
+            Timer.prototype.unbind.call(self, fn);
+            callback.apply(this, arguments);
+        });
+        return this;
+    };
+    return Timer;
+});
