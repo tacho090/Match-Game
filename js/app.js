@@ -1,9 +1,7 @@
 $(document).ready(function(){
   console.log('document ready');
   //Draggable element
-  $( function() {
-    $( "#draggable" ).draggable();
-  });
+
 
   //Droppable element
   $( function() {
@@ -33,9 +31,26 @@ $(document).ready(function(){
 
   for(i = 0; i < list.length; i++){
     for(j=0; j < list.length; j++){
-      $(".col-" + (i+1).toString()).append("<img id='theImg' src='image/" + (Math.floor((Math.random() * 4) + 1)).toString() + ".png/'>");
+      $(".col-" + (i+1).toString()).append("<img id='draggable' src='image/" + (Math.floor((Math.random() * 4) + 1)).toString() + ".png/'>");
+
     }
   }
+
+  $('div:nth-child(2)').attr('id', 'droppable');
+  //$('div:nth-child(2)').addClass('ui-widget-content');
+  // $("img").addClass('ui-widget-content');
+
+  //Droppable element
+  //usar snap
+  $( function() {
+    console.log('entered droppable function');
+    $( "#draggable" ).draggable({ grid: [ 20, 20 ]});
+    $( "#droppable" ).droppable({
+      drop: function( event, ui ) {
+        //Do something;
+      }
+    });
+  });
 
   $("div[class ^= 'col-']").attr({"style":"height:680px"});
   $("img").attr({"width":"76%", "height":"97px"});
