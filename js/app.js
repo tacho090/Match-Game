@@ -1,7 +1,4 @@
 $(document).ready(function(){
-  console.log('document ready');
-  //Draggable element
-
 
   //Droppable element
   $( function() {
@@ -15,7 +12,7 @@ $(document).ready(function(){
 
 
 
-
+  //Flashing text
   function startBlinking(){
     setInterval(function () {
       blink();
@@ -28,32 +25,44 @@ $(document).ready(function(){
     },500);
   }
   startBlinking();
+  //
 
+  //Fill columns
   var list = ['0', '1', '2', '3', '4', '5', '6'];
 
+  $('div.panel-tablero:first').attr('id', 'droppable');
+  $('div.panel-tablero:first').addClass('ui-widget-content');
+
   function fill(){
+    $("div[class ^= 'col-']").attr({"style":"height:680px"});
     for(i = 0; i < list.length; i++){
       for(j=0; j < list.length; j++){
         $(".col-" + (i+1).toString()).append("<img id='draggable' src='image/" + (Math.floor((Math.random() * 4) + 1)).toString() + ".png/'>");
       }
     }
+    $("img").attr({"width":"76%", "height":"97px"});
+    $("img").addClass('draggable');
+  }
+  fill();
+  //
+
+  //Remove images
+  function remove(){
+    $("img").remove();
   }
 
+  //Restart button event
   $(".buttons").click(function(){
     $(".btn-reinicio").text("Reiniciar");
     remove();
     fill();
+    //reset timer
   });
-
-
-  $('div.panel-tablero:first').attr('id', 'droppable');
-  $('div.panel-tablero:first').addClass('ui-widget-content');
-  $("img").addClass('draggable');//se agrega la clase y las imagenes adoptan fondo blanco
+  //
 
   //Droppable element
   //usar snap
   $( function() {
-    console.log('entered droppable function');
     $( ".draggable" ).draggable({ grid: [ 20, 20 ]});
     $( "#droppable" ).droppable({
       drop: function( event, ui ) {
@@ -62,35 +71,65 @@ $(document).ready(function(){
     });
   });
 
-  $("div[class ^= 'col-']").attr({"style":"height:680px"});
-  $("img").attr({"width":"76%", "height":"97px"});
+
 
   $(function(){
     $("div[class ^= 'col-1']").find("img").each(function(){
-      // console.log($(this).attr("src"));
     });
   });
 
   var detach_1, detach_2, detach_3;
 
-  setTimeout(function(){
-    for(var j = 1 ; j<8; j++){
-      for(var i = 2; i<7; i++){
-        //console.log($(".col-" + j.toString() + " img:nth-child(" + i.toString() + ")"));
-        if($(".col-" + j.toString() + " img:nth-child(" + i.toString() + ")").attr("src") == $(".col-" + j.toString() + " img:nth-child(" + (i+1).toString() + ")").attr("src") && $(".col-" + j.toString() + " img:nth-child(" + i.toString() + ")").attr("src") == $(".col-" + j.toString() + " img:nth-child(" + (i-1).toString() + ")").attr("src")){
-          detach_1 = $(".col-" + j.toString() + " img:nth-child(" + i.toString() + ")").hide(2000);
-          detach_2 = $(".col-" + j.toString() + " img:nth-child(" + (i+1).toString() + ")").hide(2000);
-          detach_3 = $(".col-" + j.toString() + " img:nth-child(" + (i-1).toString() + ")").hide(2000);
-          setTimeout(function(){
-            detach_1.detach();
-            detach_2.detach();
-            detach_3.detach()
-          }, 2000);;
+  function pulse(div0, div1, div2){
+    function startpulse(){
+      setInterval(function () {
+        pulsation(div0, div1, div2);
+      }, 500);
+    }
+    let toggle = 500;
+    function pulsation(div0, div1, div2) {
+      div0.fadeToggle(toggle);
+      div1.fadeToggle(toggle);
+      div2.fadeToggle(toggle);
+      pulse;
+      setTimeout(function(){
+        div0.fadeToggle(toggle);
+        div1.fadeToggle(toggle);
+        div2.fadeToggle(toggle);
+        pulse;
+      },250);
+    }
+    startpulse();
+  }
+
+  function detach_function(list){
+    for(var i = 0; i<list.length; i++){
+      list[i].detach();
+    }
+  }
+
+  $(function(){
+    //let detach_1, detach_2, detach_3;
+    let detach_list1 = [];
+    let detach_list2 = [];
+    let detach_list3 = [];
+    setTimeout(function(){
+      for(var j = 1 ; j<8; j++){
+        for(var i = 2; i<7; i++){
+          if($(".col-" + j.toString() + " img:nth-child(" + i.toString() + ")").attr("src") == $(".col-" + j.toString() + " img:nth-child(" + (i+1).toString() + ")").attr("src") && $(".col-" + j.toString() + " img:nth-child(" + i.toString() + ")").attr("src") == $(".col-" + j.toString() + " img:nth-child(" + (i-1).toString() + ")").attr("src")){
+            detach_1 = $(".col-" + j.toString() + " img:nth-child(" + i.toString() + ")");
+            detach_2 = $(".col-" + j.toString() + " img:nth-child(" + (i+1).toString() + ")");
+            detach_3 = $(".col-" + j.toString() + " img:nth-child(" + (i-1).toString() + ")");
+            detach_list1.push(detach_1, detach_2, detach_3);
+            pulse(detach_1, detach_2, detach_3);
+          }
         }
       }
-    }
-  },2000);
-
+      setTimeout(function(){
+        detach_function(detach_list1);
+      }, 5000);
+    },1000);
+  });
 
   setTimeout(function(){
     for(var i = 1; i<8; i++){
@@ -105,18 +144,17 @@ $(document).ready(function(){
       }
     }
     $("img").attr({"width":"76%", "height":"97px"});
+    $("img").addClass('draggable');
+
   }, 5000);
 
+
+  //Effect on .moves and .score after game ends
   function runEffect(){
     console.log("entered function");
-    // var selectedEffect = "size";
     var options = { to: { width: 1200, height: 185, direction: "ltr" } };
-    // var options = {mode : "show", direction: "vertical"};
-    // $(".moves, .score").hide();
     $(".moves, .score").effect("scale", options , 2000);
     $(".moves, .score").animate({
-      // width: "200%",
-      // height: "20%",
       left: "-=900",
       duration: 5000,
       queue: false,
@@ -124,11 +162,11 @@ $(document).ready(function(){
         width: "linear",
         height: "easeOutBounce"
       }
-		//'marginLeft' : "-=1000px",
-     //moves left
 		});
   }
+  //
 
+  //Timer function
   $(function(){
     var timer = new Timer('1000 miliseconds');
     var timer_text = $('#timer');
@@ -149,12 +187,9 @@ $(document).ready(function(){
         number_1 = 59;
         number_0 = '00';
       }
-
     });
-
     timer.start();
   });
-
-fill();
+  //
 
 });
