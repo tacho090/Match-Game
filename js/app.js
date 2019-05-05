@@ -14,6 +14,8 @@ $(document).ready(function(){
   });
 
 
+
+
   function startBlinking(){
     setInterval(function () {
       blink();
@@ -29,12 +31,20 @@ $(document).ready(function(){
 
   var list = ['0', '1', '2', '3', '4', '5', '6'];
 
-  for(i = 0; i < list.length; i++){
-    for(j=0; j < list.length; j++){
-      $(".col-" + (i+1).toString()).append("<img id='draggable' src='image/" + (Math.floor((Math.random() * 4) + 1)).toString() + ".png/'>");
-
+  function fill(){
+    for(i = 0; i < list.length; i++){
+      for(j=0; j < list.length; j++){
+        $(".col-" + (i+1).toString()).append("<img id='draggable' src='image/" + (Math.floor((Math.random() * 4) + 1)).toString() + ".png/'>");
+      }
     }
   }
+
+  $(".buttons").click(function(){
+    $(".btn-reinicio").text("Reiniciar");
+    remove();
+    fill();
+  });
+
 
   $('div.panel-tablero:first').attr('id', 'droppable');
   $('div.panel-tablero:first').addClass('ui-widget-content');
@@ -97,6 +107,27 @@ $(document).ready(function(){
     $("img").attr({"width":"76%", "height":"97px"});
   }, 5000);
 
+  function runEffect(){
+    console.log("entered function");
+    // var selectedEffect = "size";
+    var options = { to: { width: 1200, height: 185, direction: "ltr" } };
+    // var options = {mode : "show", direction: "vertical"};
+    // $(".moves, .score").hide();
+    $(".moves, .score").effect("scale", options , 2000);
+    $(".moves, .score").animate({
+      // width: "200%",
+      // height: "20%",
+      left: "-=900",
+      duration: 5000,
+      queue: false,
+      specialEasing: {
+        width: "linear",
+        height: "easeOutBounce"
+      }
+		//'marginLeft' : "-=1000px",
+     //moves left
+		});
+  }
 
   $(function(){
     var timer = new Timer('1000 miliseconds');
@@ -108,8 +139,11 @@ $(document).ready(function(){
       console.log(number_1);
       timer_text.text(number_0 + ':' + number_1.toString());
       number_1 = number_1 - 1;
-      if(timer_text.text() == '00:00'){
-        alert('se acabó el tiempo');
+      if(timer_text.text() == '00:0'){
+        console.log('se acabó el tiempo');
+        $(".panel-tablero, .time").hide(2000);
+        runEffect();
+
       }
       if(number_1<0){
         number_1 = 59;
@@ -121,6 +155,6 @@ $(document).ready(function(){
     timer.start();
   });
 
-
+fill();
 
 });
