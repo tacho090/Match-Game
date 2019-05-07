@@ -1,17 +1,5 @@
 $(document).ready(function(){
 
-  //Droppable element
-  $( function() {
-    $( "#draggable" ).draggable();
-    $( "#droppable" ).droppable({
-      drop: function( event, ui ) {
-        //Do something;
-      }
-    });
-  });
-
-
-
   //Flashing text
   function startBlinking(){
     setInterval(function () {
@@ -33,6 +21,75 @@ $(document).ready(function(){
   $('div.panel-tablero:first').attr('id', 'droppable');
   $('div.panel-tablero:first').addClass('ui-widget-content');
 
+  //Restart button event
+  $(".buttons").click(function(){
+    $(".btn-reinicio").text("Reiniciar");
+    remove();
+    fill();
+    drag();
+    //reset timer
+  });
+
+  //Remove images
+  function remove(){
+    $("img").remove();
+  };
+
+
+  //Droppable element
+  //usar snap
+
+  //detect which element mouse is over
+  setInterval(function(){
+    var element = $(':hover');
+    if(element.length)
+    {
+      // var domElement = element[element.length - 1];
+      // var tagName = domElement.tagName;
+      // var id = domElement.id ? ' id="' + domElement.id + '"' : "";
+
+      // document.getElementById('test').innerHTML =
+      // "hover: &lt;" + tagName.toLowerCase() + id + "&gt;";
+
+      console.log(element);
+    }
+  }, 100);
+
+  function drag(){
+    $( ".draggable" ).draggable({
+      // containment: "parent",
+      cursor: "move",
+      snap: true,
+      snapMode: "inner",
+      //axis: "x",
+      revert: true,
+      appendTo: "body"//onmouserelease var element $(:hover) = col
+      // classes: {
+      //   "ui-draggable": "highlight"
+      // }
+
+      // drag: function() {
+      //   counts[ 1 ]++;
+      //   updateCounterStatus( $drag_counter, counts[ 1 ] );
+      // }
+      // grid: [ 20, 20 ],
+    //   drag: function(event, ui) {
+    //     var leftPosition = ui.position.left;
+    //     if (leftPosition > maxMenuWidth) {
+    //       ui.position.left = maxMenuWidth;
+    // }
+
+    });
+    $( "#droppable" ).droppable({
+      drop: function( event, ui ) {
+        //Do something;
+      }
+    });
+  };
+
+
+
+  //Fill
   function fill(){
     $("div[class ^= 'col-']").attr({"style":"height:680px"});
     for(i = 0; i < list.length; i++){
@@ -44,33 +101,8 @@ $(document).ready(function(){
     $("img").addClass('draggable');
   }
   fill();
+  drag();
   //
-
-  //Remove images
-  function remove(){
-    $("img").remove();
-  }
-
-  //Restart button event
-  $(".buttons").click(function(){
-    $(".btn-reinicio").text("Reiniciar");
-    remove();
-    fill();
-    //reset timer
-  });
-  //
-
-  //Droppable element
-  //usar snap
-  $( function() {
-    $( ".draggable" ).draggable({ grid: [ 20, 20 ]});
-    $( "#droppable" ).droppable({
-      drop: function( event, ui ) {
-        //Do something;
-      }
-    });
-  });
-
 
 
   $(function(){
@@ -136,6 +168,9 @@ $(document).ready(function(){
           }
         }
       }
+      setTimeout(function(){
+        //detach_function(detach_row_list);
+      }, 3000);
     }, 1000);
     console.log("*".repeat(25) + "Rows" + "*".repeat(25));
     console.log(detach_row_list);
@@ -162,7 +197,7 @@ $(document).ready(function(){
         }
       }
       setTimeout(function(){
-        detach_function(detach_column_list1);
+        //detach_function(detach_column_list1);
       }, 3000);
     },1000);
     console.log("*".repeat(25) + "Columns" + "*".repeat(25));
@@ -170,6 +205,8 @@ $(document).ready(function(){
     console.log("*".repeat(50));
   });
 
+
+  //add new items
   setTimeout(function(){
     for(var i = 1; i<8; i++){
       console.log('column number ' + i.toString() + ' passed');
