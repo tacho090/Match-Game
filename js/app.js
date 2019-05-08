@@ -27,6 +27,10 @@ $(document).ready(function(){
     remove();
     fill();
     drag();
+    columnMatch();
+    rowMatch();
+    addScore(0, true);
+    Timer_panel(false);
     //reset timer
   });
 
@@ -105,11 +109,6 @@ $(document).ready(function(){
   //
 
 
-  $(function(){
-    $("div[class ^= 'col-1']").find("img").each(function(){
-    });
-  });
-
   var detach_col_1, detach_col_2, detach_col_3, detach_row_1, detach_row_2, detach_row_3;
 
   function pulse(div){
@@ -131,58 +130,35 @@ $(document).ready(function(){
   }
 
   function detach_function(list){
-    let time = 2000;
+    let time = 500;
+    let score = 20;
     for(var i = 0; i<list.length; i++){
       list[i].hide( time ,function(){
+        addScore(score, false);
         console.log("Animation complete");
       });
       setTimeout(function(){
         for(var i = 0; i<list.length; i++){
           list[i].detach();
-        }      
+        }
       }, time);
     }
-    // for(var i = 0; i<list.length; i++){
-    //   //list[i].detach();
-    //   $(list[i]).animate({
-    //     opacity: 0.25,
-    //     height: "hide"
-    //   }, 2000, function() {
-    //     // Animation complete.
-    //   });
-    // }
+    setTimeout(function(){
+      addItems();
+    }, time * 1.5);
   }
-  addItems();
-  //encontrar coincidencias en filas
-  // $(function(){
-  //   let detach_row_list = [];
-  //   setTimeout(function(){
-  //     for(var i = 1; i<8; i++){//filas
-  //       for(var j = 2; j<7; j++){//columnas
-  //         if($(".col-" + j.toString() + "img:nth-child(" + i.toString() + ")").attr("src") === $(".col-" + (j+1).toString() + "img:nth-child(" + i.toString() + ")").attr("src") && $(".col-" + j.toString() + "img:nth-child(" + i.toString() + ")").attr("src") === $(".col-" + (j-1).toString() + "img:nth-child(" + i.toString() + ")").attr("src")){
-  //           detach_row_1 = $(".col-" + j.toString() + " img:nth-child(" + i.toString() + ")");
-  //           detach_row_2 = $(".col-" + (j+1).toString() + " img:nth-child(" + i.toString() + ")");
-  //           detach_row_3 = $(".col-" + (j-1).toString() + " img:nth-child(" + i.toString() + ")");
-  //           detach_row_list.push(detach_row_1, detach_row_2, detach_row_3);
-  //         }else{
-  //           console.log("no coincidence");
-  //         }
-  //       }
-  //     }
-  //     setTimeout(function(){
-  //       //detach_function(detach_row_list);
-  //     }, 3000);
-  //   }, 1000);
-  //   console.log("*".repeat(25) + "Rows" + "*".repeat(25));
-  //   console.log(detach_row_list);
-  //   console.log("*".repeat(50));
-  // });
+  columnMatch();
+  rowMatch();
+  Timer_panel(true);
 
-  var iteration_time = 1000;
-  var detach_time = 3000;
+
+
+
+  var iteration_time = 250;
+  var detach_time = 750;
 
   //encontrar coincidencias en columnas
-  $(function(){
+  function rowMatch(){
     let detach_row_list = [];
       setTimeout(function(){
         for(var i = 1; i<8; i++){//filas
@@ -208,15 +184,13 @@ $(document).ready(function(){
       console.log(detach_row_list);
       console.log("*".repeat(50));
       // addItems();
-  })
+  };
 
 
   //encontrar coincidencias en columnas
-  $(function(){
+  function columnMatch(){
     //let detach_1, detach_2, detach_3;
-    let detach_column_list1 = [];
-    let detach_list2 = [];
-    let detach_list3 = [];
+    let detach_column_list = [];
     setTimeout(function(){
       for(var j = 1 ; j<8; j++){
         for(var i = 2; i<7; i++){
@@ -224,33 +198,34 @@ $(document).ready(function(){
             detach_col_1 = $(".col-" + j.toString() + " img:nth-child(" + i.toString() + ")");
             detach_col_2 = $(".col-" + j.toString() + " img:nth-child(" + (i+1).toString() + ")");
             detach_col_3 = $(".col-" + j.toString() + " img:nth-child(" + (i-1).toString() + ")");
-            detach_column_list1.push(detach_col_1, detach_col_2, detach_col_3);
+            detach_column_list.push(detach_col_1, detach_col_2, detach_col_3);
             // pulse(detach_col_1, detach_col_2, detach_col_3);
           }
         }
       }
       setTimeout(function(){
         // pulse(detach_column_list1);
-        detach_function(detach_column_list1);
+        detach_function(detach_column_list);
       }, detach_time);
     }, iteration_time);
     console.log("*".repeat(25) + "Columns" + "*".repeat(25));
-    console.log(detach_column_list1);
+    console.log(detach_column_list);
     console.log("*".repeat(50));
     // addItems();
-  });
+  };
 
 
   //add new items
   function addItems(){
-    setTimeout(function(){
-      console.log('addItems entered');
+    let time = 250;
+    let difference = 0;
+    let difference_list = [];
+    // setTimeout(function(){
       for(var i = 1; i<8; i++){
-        console.log('addItems for entered');
         if($(".col-" + i.toString()).children().length < 7){
           let resta = $(".col-" + i.toString()).children().length;
-          let difference = 7 - resta;
-          console.log(difference.toString() + ' dom elements dispatched to column ' + i.toString());
+          difference = 7 - resta;
+          difference_list.push(difference);
           for(var j = 0; j<difference; j++){
             $('.col-' + i.toString()).prepend("<img id='theImg' src='image/" + (Math.floor((Math.random() * 4) + 1)).toString() + ".png/'>");
           }
@@ -258,10 +233,19 @@ $(document).ready(function(){
       }
       $("img").attr({"width":"76%", "height":"97px"});
       $("img").addClass('draggable');
-    }, 8000);
+    // }, 8000);
+    console.log(difference_list);
+    for( i = 0; i < difference_list.length; i++){
+      if(difference_list[i] !== 0){
+        setTimeout(function(){
+          columnMatch();
+          rowMatch();
+        }, time);
+      }else{
+        console.log("all are equal to 0");
+      }
+    }
   };
-
-
 
   //Effect on .moves and .score after game ends
   function runEffect(){
@@ -280,29 +264,48 @@ $(document).ready(function(){
   }
   //
 
-  //Timer function
-  $(function(){
-    var timer = new Timer('1000 miliseconds');
-    var timer_text = $('#timer');
-    var number_0 = '01';
-    var number_1 = 59;
-    timer.bind(1000 * 1, function () {
-      // console.log(number_1);
-      timer_text.text(number_0 + ':' + number_1.toString());
-      number_1 = number_1 - 1;
-      if(timer_text.text() == '00:0'){
-        console.log('se acabó el tiempo');
-        $(".panel-tablero, .time").hide(2000);
-        runEffect();
+  var new_score = 0;
+  var movimientos = 0;
 
+  function addScore(score, reinicio){
+    if(reinicio){
+      new_score = 0;
+      $(".panel-score .score span").text(new_score.toString());
+    }else{
+      new_score = new_score + score;
+      console.log(new_score);
+      $(".panel-score .score span").text(new_score.toString());
+    }
+  };
+
+  //Timer function
+  function Timer_panel(start){
+
+      var timer = new Timer('1000 miliseconds');
+      var timer_text = $('#timer');
+      var number_0 = '01';
+      var number_1 = 59;
+      timer.bind(1000 * 1, function () {
+        // console.log(number_1);
+        timer_text.text(number_0 + ':' + number_1.toString());
+        number_1 = number_1 - 1;
+        if(timer_text.text() == '00:0'){
+          console.log('se acabó el tiempo');
+          $(".panel-tablero, .time").hide(2000);
+          runEffect();
+        }
+        if(number_1<0){
+          number_1 = 59;
+          number_0 = '00';
+        }
+      });
+      if(start == true){
+        timer.start();
+      }else{
+        timer.reset();
+        // timer.start();
       }
-      if(number_1<0){
-        number_1 = 59;
-        number_0 = '00';
-      }
-    });
-    timer.start();
-  });
+  };
   //
 
 });
