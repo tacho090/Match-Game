@@ -293,6 +293,7 @@ $(document).ready(function(){
           console.log('se acabó el tiempo');
           $(".panel-tablero, .time").hide(2000);
           runEffect();
+          timer.clear();
         }
         if(number_1<0){
           number_1 = 59;
@@ -303,7 +304,7 @@ $(document).ready(function(){
         timer.start();
       }else{
         timer.reset();
-        // timer.start();
+        timer.start();
       }
   };
   //
