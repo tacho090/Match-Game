@@ -40,20 +40,20 @@ $(document).ready(function(){
   //usar snap
 
   //detect which element mouse is over
-  setInterval(function(){
-    var element = $(':hover');
-    if(element.length)
-    {
-      // var domElement = element[element.length - 1];
-      // var tagName = domElement.tagName;
-      // var id = domElement.id ? ' id="' + domElement.id + '"' : "";
-
-      // document.getElementById('test').innerHTML =
-      // "hover: &lt;" + tagName.toLowerCase() + id + "&gt;";
-
-      console.log(element);
-    }
-  }, 100);
+  // setInterval(function(){
+  //   var element = $(':hover');
+  //   if(element.length)
+  //   {
+  //     // var domElement = element[element.length - 1];
+  //     // var tagName = domElement.tagName;
+  //     // var id = domElement.id ? ' id="' + domElement.id + '"' : "";
+  //
+  //     // document.getElementById('test').innerHTML =
+  //     // "hover: &lt;" + tagName.toLowerCase() + id + "&gt;";
+  //
+  //     console.log(element);
+  //   }
+  // }, 100);
 
   function drag(){
     $( ".draggable" ).draggable({
@@ -112,22 +112,18 @@ $(document).ready(function(){
 
   var detach_col_1, detach_col_2, detach_col_3, detach_row_1, detach_row_2, detach_row_3;
 
-  function pulse(div0, div1, div2){
+  function pulse(div){
     function startpulse(){
       setInterval(function () {
-        pulsation(div0, div1, div2);
+        pulsation(div);
       }, 500);
     }
     let toggle = 500;
-    function pulsation(div0, div1, div2) {
-      div0.fadeToggle(toggle);
-      div1.fadeToggle(toggle);
-      div2.fadeToggle(toggle);
+    function pulsation(div) {
+      div.fadeToggle(toggle);
       pulse;
       setTimeout(function(){
-        div0.fadeToggle(toggle);
-        div1.fadeToggle(toggle);
-        div2.fadeToggle(toggle);
+        div.fadeToggle(toggle);
         pulse;
       },250);
     }
@@ -135,11 +131,16 @@ $(document).ready(function(){
   }
 
   function detach_function(list){
+    let time = 2000;
     for(var i = 0; i<list.length; i++){
-      console.log(list[i]);
-      list[i].hide( 5000 ,function(){
+      list[i].hide( time ,function(){
         console.log("Animation complete");
       });
+      setTimeout(function(){
+        for(var i = 0; i<list.length; i++){
+          list[i].detach();
+        }      
+      }, time);
     }
     // for(var i = 0; i<list.length; i++){
     //   //list[i].detach();
@@ -151,31 +152,63 @@ $(document).ready(function(){
     //   });
     // }
   }
-
+  addItems();
   //encontrar coincidencias en filas
+  // $(function(){
+  //   let detach_row_list = [];
+  //   setTimeout(function(){
+  //     for(var i = 1; i<8; i++){//filas
+  //       for(var j = 2; j<7; j++){//columnas
+  //         if($(".col-" + j.toString() + "img:nth-child(" + i.toString() + ")").attr("src") === $(".col-" + (j+1).toString() + "img:nth-child(" + i.toString() + ")").attr("src") && $(".col-" + j.toString() + "img:nth-child(" + i.toString() + ")").attr("src") === $(".col-" + (j-1).toString() + "img:nth-child(" + i.toString() + ")").attr("src")){
+  //           detach_row_1 = $(".col-" + j.toString() + " img:nth-child(" + i.toString() + ")");
+  //           detach_row_2 = $(".col-" + (j+1).toString() + " img:nth-child(" + i.toString() + ")");
+  //           detach_row_3 = $(".col-" + (j-1).toString() + " img:nth-child(" + i.toString() + ")");
+  //           detach_row_list.push(detach_row_1, detach_row_2, detach_row_3);
+  //         }else{
+  //           console.log("no coincidence");
+  //         }
+  //       }
+  //     }
+  //     setTimeout(function(){
+  //       //detach_function(detach_row_list);
+  //     }, 3000);
+  //   }, 1000);
+  //   console.log("*".repeat(25) + "Rows" + "*".repeat(25));
+  //   console.log(detach_row_list);
+  //   console.log("*".repeat(50));
+  // });
+
+  var iteration_time = 1000;
+  var detach_time = 3000;
+
+  //encontrar coincidencias en columnas
   $(function(){
     let detach_row_list = [];
-    setTimeout(function(){
-      for(var i = 1; i<8; i++){//filas
-        for(var j = 2; j<7; j++){//columnas
-          if($(".col-" + j.toString() + "img:nth-child(" + i.toString() + ")").attr("src") === $(".col-" + (j+1).toString() + "img:nth-child(" + i.toString() + ")").attr("src") && $(".col-" + j.toString() + "img:nth-child(" + i.toString() + ")").attr("src") === $(".col-" + (j-1).toString() + "img:nth-child(" + i.toString() + ")").attr("src")){
-            detach_row_1 = $(".col-" + j.toString() + " img:nth-child(" + i.toString() + ")");
-            detach_row_2 = $(".col-" + (j+1).toString() + " img:nth-child(" + i.toString() + ")");
-            detach_row_3 = $(".col-" + (j-1).toString() + " img:nth-child(" + i.toString() + ")");
-            detach_row_list.push(detach_row_1, detach_row_2, detach_row_3);
-          }else{
-            console.log("no coincidence");
+      setTimeout(function(){
+        for(var i = 1; i<8; i++){//filas
+          for(var j = 2; j<7; j++){//columnas
+            let center = $(".col-" + j.toString() + " img:nth-child(" + i.toString() + ")").attr("src");
+            let previous = $(".col-" + (j-1).toString() + " img:nth-child(" + i.toString() + ")").attr("src");
+            let next = $(".col-" + (j+1).toString() + " img:nth-child(" + i.toString() + ")").attr("src");
+            if(center == previous && center == next){
+              detach_row_1 = $(".col-" + j.toString() + " img:nth-child(" + i.toString() + ")");
+              detach_row_2 = $(".col-" + (j+1).toString() + " img:nth-child(" + i.toString() + ")");
+              detach_row_3 = $(".col-" + (j-1).toString() + " img:nth-child(" + i.toString() + ")");
+              detach_row_list.push(detach_row_1, detach_row_2, detach_row_3);
+              // pulse(detach_row_1, detach_row_2, detach_row_3);
+            }
           }
         }
-      }
-      setTimeout(function(){
-        //detach_function(detach_row_list);
-      }, 3000);
-    }, 1000);
-    console.log("*".repeat(25) + "Rows" + "*".repeat(25));
-    console.log(detach_row_list);
-    console.log("*".repeat(50));
-  });
+        setTimeout(function(){
+          // pulse(detach_row_list);
+          detach_function(detach_row_list);
+        }, detach_time);
+      }, iteration_time);
+      console.log("*".repeat(25) + "Rows" + "*".repeat(25));
+      console.log(detach_row_list);
+      console.log("*".repeat(50));
+      // addItems();
+  })
 
 
   //encontrar coincidencias en columnas
@@ -192,37 +225,42 @@ $(document).ready(function(){
             detach_col_2 = $(".col-" + j.toString() + " img:nth-child(" + (i+1).toString() + ")");
             detach_col_3 = $(".col-" + j.toString() + " img:nth-child(" + (i-1).toString() + ")");
             detach_column_list1.push(detach_col_1, detach_col_2, detach_col_3);
-            pulse(detach_col_1, detach_col_2, detach_col_3);
+            // pulse(detach_col_1, detach_col_2, detach_col_3);
           }
         }
       }
       setTimeout(function(){
-        //detach_function(detach_column_list1);
-      }, 3000);
-    },1000);
+        // pulse(detach_column_list1);
+        detach_function(detach_column_list1);
+      }, detach_time);
+    }, iteration_time);
     console.log("*".repeat(25) + "Columns" + "*".repeat(25));
     console.log(detach_column_list1);
     console.log("*".repeat(50));
+    // addItems();
   });
 
 
   //add new items
-  setTimeout(function(){
-    for(var i = 1; i<8; i++){
-      console.log('column number ' + i.toString() + ' passed');
-      if($(".col-" + i.toString()).children().length < 7){
-        let resta = $(".col-" + i.toString()).children().length;
-        let difference = 7 - resta;
-        console.log(difference.toString() + ' dom elements dispatched to column ' + i.toString());
-        for(var j = 0; j<difference; j++){
-          $('.col-' + i.toString()).prepend("<img id='theImg' src='image/" + (Math.floor((Math.random() * 4) + 1)).toString() + ".png/'>");
+  function addItems(){
+    setTimeout(function(){
+      console.log('addItems entered');
+      for(var i = 1; i<8; i++){
+        console.log('addItems for entered');
+        if($(".col-" + i.toString()).children().length < 7){
+          let resta = $(".col-" + i.toString()).children().length;
+          let difference = 7 - resta;
+          console.log(difference.toString() + ' dom elements dispatched to column ' + i.toString());
+          for(var j = 0; j<difference; j++){
+            $('.col-' + i.toString()).prepend("<img id='theImg' src='image/" + (Math.floor((Math.random() * 4) + 1)).toString() + ".png/'>");
+          }
         }
       }
-    }
-    $("img").attr({"width":"76%", "height":"97px"});
-    $("img").addClass('draggable');
+      $("img").attr({"width":"76%", "height":"97px"});
+      $("img").addClass('draggable');
+    }, 8000);
+  };
 
-  }, 5000);
 
 
   //Effect on .moves and .score after game ends
@@ -246,11 +284,10 @@ $(document).ready(function(){
   $(function(){
     var timer = new Timer('1000 miliseconds');
     var timer_text = $('#timer');
-    console.log(timer_text);
     var number_0 = '01';
     var number_1 = 59;
     timer.bind(1000 * 1, function () {
-      console.log(number_1);
+      // console.log(number_1);
       timer_text.text(number_0 + ':' + number_1.toString());
       number_1 = number_1 - 1;
       if(timer_text.text() == '00:0'){
@@ -264,7 +301,7 @@ $(document).ready(function(){
         number_0 = '00';
       }
     });
-    // timer.start();
+    timer.start();
   });
   //
 
