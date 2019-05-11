@@ -154,8 +154,28 @@ $(document).ready(function(){
       // hoverClass: "ui-drop-hover",
       accept: ".draggable",
       drop: function( event, ui ) {
-        ui.replaceWith($(this));
-        $(this).replaceWith(ui);
+        let $this = $(this);
+        let li1 = $(ui.draggable);
+        let linew1 = $(this).after(li1);
+
+        let li2 = $(this);
+        let linew2 = $(ui.draggable).after(li2);
+
+        $(ui.draggable).remove();
+        $(this).remove();
+
+        drop('.draggable');
+        $(".draggable").draggable({
+          // appendTo: "body",
+          snap:'.draggable',
+          snapMode: 'inner',
+          // helper: "clone",
+          cursor: "move",
+          revert: "invalid"
+        });
+
+        // ui.replaceWith($(this));
+        // $(this).replaceWith(ui);
           // img.replaceWith($(this));
         console.log('dropped');
       }
