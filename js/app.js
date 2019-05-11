@@ -71,26 +71,31 @@ $(document).ready(function(){
     drop(origin);
   });
 
-  $()
+
 
   // $('img').on('mouseup', function(){
   //   console.log('mouse up')
   //   drop(this);
   // });
 
-  function mouseDown(){
-
-  }
 
   function drag(){
-    $( ".draggable" ).draggable({
-      // containment: "parent",
-      cursor: "move",
-      snap: '.draggable',
-      snapMode: "inner",
-      //axis: "x",
-      revert: true,
-      appendTo: "body"//onmouserelease var element $(:hover) = col
+    $(".draggable").draggable({
+                // appendTo: "body",
+                snap:'.draggable',
+                snapMode: 'inner',
+                // helper: "clone",
+                cursor: "move",
+                revert: "invalid"
+
+    // $( ".draggable" ).draggable({
+    //   // containment: "parent",
+    //   cursor: "move",
+    //   snap: '.draggable',
+    //   snapMode: "inner",
+    //   //axis: "x",
+    //   revert: true,
+    //   appendTo: "body"//onmouserelease var element $(:hover) = col
       // classes: {
       //   "ui-draggable": "highlight"
       // }
@@ -108,13 +113,51 @@ $(document).ready(function(){
 
     });
   };
+  drop('.draggable');
+  // initDroppable('.draggable');
+  // function initDroppable(elements) {
+  //     elements.droppable({
+  //         activeClass: "ui-state-default",
+  //         hoverClass: "ui-drop-hover",
+  //         accept: ".draggable",
+  //
+  //         // over: function(event, ui) {
+  //         //     var $this = $(this);
+  //         // },
+  //         drop: function(event, ui) {
+  //           console.log('dropped');
+  //             // var $this = $(this);
+  //             // var li1 = $('<li>' + ui.draggable.text() + '</li>')
+  //             // var linew1 = $(this).after(li1);
+  //             //
+  //             // var li2 = $('<li>' + $(this).text() + '</li>')
+  //             // var linew2 = $(ui.draggable).after(li2);
+  //             //
+  //             // $(ui.draggable).remove();
+  //             // $(this).remove();
+  //
+  //             initDroppable($(".draggable"));
+  //             $(".draggable").draggable({
+  //                 appendTo: "body",
+  //                 helper: "clone",
+  //                 cursor: "move",
+  //                 revert: "invalid"
+  //             });
+  //         }
+  //     });
+  // };
 
   function drop(img){
+    console.log('entered drop function');
     $( ".droppable" ).droppable({
+      // activeClass: "ui-state-default",
+      // hoverClass: "ui-drop-hover",
+      accept: ".draggable",
       drop: function( event, ui ) {
-        $(this).replaceWith(img);
-        // img.replaceWith($(this));
-        console.log('replaced');
+        ui.replaceWith($(this));
+        $(this).replaceWith(ui);
+          // img.replaceWith($(this));
+        console.log('dropped');
       }
     });
   };
