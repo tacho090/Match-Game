@@ -113,7 +113,7 @@ $(document).ready(function(){
     $( ".droppable" ).droppable({
       drop: function( event, ui ) {
         $(this).replaceWith(img);
-        img.replaceWith($(this));
+        // img.replaceWith($(this));
         console.log('replaced');
       }
     });
