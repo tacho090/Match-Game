@@ -2,12 +2,19 @@ $(document).ready(function(){
 
   //Variables
   var list = ['0', '1', '2', '3', '4', '5', '6'];
-  var iteration_time = 250;
-  var detach_time = 750;
+  var iteration_time = 100;
+  var detach_time = 3000;
+  var pulse_time = 100;
   var new_score = 0;
   var movimientos = 0;
   var detach_col_1, detach_col_2, detach_col_3, detach_row_1, detach_row_2, detach_row_3;
+  var total_time = 1000;
+  var timer = new Timer('1000 miliseconds');
+  var timer_text = $('#timer');
 
+  //Fill columns
+  $('div.panel-tablero:first').attr('id', 'droppable');
+  $('div.panel-tablero:first').addClass('ui-widget-content');
 
   //Flashing text
   function startBlinking(){
@@ -21,31 +28,28 @@ $(document).ready(function(){
       $(".main-titulo").css("color", "#DCFF0E");
     },500);
   }
-  startBlinking();
 
-  //Fill columns
-
-  $('div.panel-tablero:first').attr('id', 'droppable');
-  $('div.panel-tablero:first').addClass('ui-widget-content');
 
   //Restart button event
   $(".buttons").click(function(){
     $(".btn-reinicio").text("Reiniciar");
-    remove();
-    fill();
-    drag();
-    columnMatch();
-    rowMatch();
-    addScore(0, true);
-    Timer_panel(false);
-    //reset timer
+    if(timer_text.text() == '00:0'){
+      location.reload();
+    }else{
+      remove();
+      fill();
+      drag();
+      columnMatch();
+      rowMatch();
+      addScore(0, true);
+      Timer_panel(false);
+    }
   });
 
   //Remove images
   function remove(){
     $("img").remove();
   };
-
 
   //Drag and drop images
   var origin;
@@ -54,6 +58,7 @@ $(document).ready(function(){
     drop(origin);
   });
 
+  //Draggable attr
   function drag(){
     $(".draggable").draggable({
       snap:'.draggable',
@@ -63,6 +68,7 @@ $(document).ready(function(){
     });
   };
 
+  //Droppable
   function drop(img){
     console.log('entered drop function');
     let pos1 = $(img).position();
@@ -74,7 +80,6 @@ $(document).ready(function(){
         let pos2 = $(this).position();
         let li1_src = $(img).attr('src');
         let li2_src = li2.attr('src');
-
         li2.offset({top:pos1.top,left:pos1.left});
         li1.offset({top:pos2.top,left:pos2.left});
         setTimeout(function(){
@@ -104,33 +109,23 @@ $(document).ready(function(){
     $("img").addClass('draggable');
     $('img').addClass('droppable');
   }
-  fill();
-  drag();
-  drop();
-  //
-
 
   //Pulse
   function pulse(div){
-    let time = 125;
+    let time = 500;
     function startpulse(){
       setInterval(function () {
         pulsation(div);
       }, time);
     }
-    let toggle = time*2;
+    let toggle = time/4;
     function pulsation(div) {
-      //   console.log('pulse\n');
-      div.fadeToggle(toggle);
-      pulse;
-      setTimeout(function(){
-        div.fadeToggle(toggle);
-        pulse;
-      },time);
+      for(var i = 0; i<div.length; i++){
+        div[i].fadeToggle(toggle);
+      }
     }
     startpulse();
   }
-
 
   //Detach function
   function detach_function(list){
@@ -150,10 +145,6 @@ $(document).ready(function(){
       addItems();
     }, time * 1.5);
   }
-  columnMatch();
-  rowMatch();
-  Timer_panel(true);
-
 
   //encontrar coincidencias en filas
   function rowMatch(){
@@ -169,21 +160,20 @@ $(document).ready(function(){
               detach_row_2 = $(".col-" + (j+1).toString() + " img:nth-child(" + i.toString() + ")");
               detach_row_3 = $(".col-" + (j-1).toString() + " img:nth-child(" + i.toString() + ")");
               detach_row_list.push(detach_row_1, detach_row_2, detach_row_3);
-              //ulse(detach_row_list);
             }
           }
         }
         setTimeout(function(){
           pulse(detach_row_list);
-          detach_function(detach_row_list);
-        }, detach_time);
+          setTimeout(function(){
+            detach_function(detach_row_list);
+          }, detach_time);
+        }, pulse_time);
       }, iteration_time);
   };
 
-
   //encontrar coincidencias en columnas
   function columnMatch(){
-    //let detach_1, detach_2, detach_3;
     let detach_column_list = [];
     setTimeout(function(){
       for(var j = 1 ; j<8; j++){
@@ -193,17 +183,17 @@ $(document).ready(function(){
             detach_col_2 = $(".col-" + j.toString() + " img:nth-child(" + (i+1).toString() + ")");
             detach_col_3 = $(".col-" + j.toString() + " img:nth-child(" + (i-1).toString() + ")");
             detach_column_list.push(detach_col_1, detach_col_2, detach_col_3);
-            //pulse(detach_column_list);
           }
         }
       }
       setTimeout(function(){
         pulse(detach_column_list);
-        detach_function(detach_column_list);
+        setTimeout(function(){
+          detach_function(detach_column_list);
+        }, pulse_time);
       }, detach_time);
     }, iteration_time);
   };
-
 
   //add new items
   function addItems(){
@@ -266,9 +256,6 @@ $(document).ready(function(){
 
   //Timer function
   function Timer_panel(start){
-
-      var timer = new Timer('1000 miliseconds');
-      var timer_text = $('#timer');
       var number_0 = '01';
       var number_1 = 59;
       timer.bind(1000 * 1, function () {
@@ -288,10 +275,17 @@ $(document).ready(function(){
       if(start == true){
         timer.start();
       }else{
-        timer.reset();
-        // timer.start();
+        timer.stop();
+        timer.start();
       }
   };
-  //
+
+  //Executable functions
+  startBlinking();
+  fill();
+  drag();
+  columnMatch();
+  rowMatch();
+  Timer_panel(true);
 
 });
