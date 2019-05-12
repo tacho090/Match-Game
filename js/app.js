@@ -154,15 +154,20 @@ $(document).ready(function(){
       // hoverClass: "ui-drop-hover",
       accept: ".draggable",
       drop: function( event, ui ) {
-        let $this = $(this);
+        // let $this = $(this);
         let li1 = $(ui.draggable);
-        let linew1 = $(this).after(li1);
+        let aBefore = $('<div>').insertBefore(li1);
+        $(this).insertAfter(aBefore);
 
         let li2 = $(this);
-        let linew2 = $(ui.draggable).after(li2);
+        let bBefore = $('<div>').insertBefore(li2);
+        ui.draggable.insertAfter(bBefore);
 
-        $(ui.draggable).remove();
-        $(this).remove();
+        aBefore.remove();
+        bBefore.remove();
+
+        // li1.remove();
+        // li2.remove();
 
         drop('.draggable');
         $(".draggable").draggable({
@@ -181,6 +186,14 @@ $(document).ready(function(){
       }
     });
   };
+
+  function swap(a, b) {
+    a = $(a); b = $(b);
+    var tmp = $('<span>').hide();
+    a.before(tmp);
+    b.before(a);
+    tmp.replaceWith(b);
+};
 
 
 
