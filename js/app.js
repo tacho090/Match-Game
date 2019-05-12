@@ -11,6 +11,10 @@ $(document).ready(function(){
   var total_time = 1000;
   var timer = new Timer('1000 miliseconds');
   var timer_text = $('#timer');
+  var movimientos_text = $('#movimientos-text');
+  var number_movimientos = 0;
+
+
 
   //Fill columns
   $('div.panel-tablero:first').attr('id', 'droppable');
@@ -70,11 +74,12 @@ $(document).ready(function(){
 
   //Droppable
   function drop(img){
-    console.log('entered drop function');
     let pos1 = $(img).position();
     $( ".droppable" ).droppable({
       accept: ".draggable",
       drop: function( event, ui ) {
+        number_movimientos = number_movimientos + 1;
+        movimientos_text.text((number_movimientos).toString());
         let li1 = $(ui.draggable);
         let li2 = $(this);
         let pos2 = $(this).position();
@@ -90,7 +95,6 @@ $(document).ready(function(){
       }
     });
     setTimeout(function(){
-      console.log('drop and entered columnMatch function');
       drag();
       columnMatch();
       rowMatch();
@@ -129,17 +133,15 @@ $(document).ready(function(){
 
   //Detach function
   function detach_function(list){
-    let time = 500;
+    let time = 2000;
     let score = 20;
     for(var i = 0; i<list.length; i++){
       list[i].hide( time ,function(){
-        addScore(score, false);
-      });
-      setTimeout(function(){
         for(var i = 0; i<list.length; i++){
           list[i].detach();
         }
-      }, time);
+        addScore(score, false);
+      });
     }
     setTimeout(function(){
       addItems();
@@ -190,8 +192,8 @@ $(document).ready(function(){
         pulse(detach_column_list);
         setTimeout(function(){
           detach_function(detach_column_list);
-        }, pulse_time);
-      }, detach_time);
+        }, detach_time);
+      }, pulse_time);
     }, iteration_time);
   };
 
@@ -217,8 +219,10 @@ $(document).ready(function(){
     for( i = 0; i < difference_list.length; i++){
       if(difference_list[i] !== 0){
         setTimeout(function(){
-          drag();
-          drop('.draggable');
+          // drag();
+          // drop('.draggable');
+          $("img").addClass('draggable');
+          $('img').addClass('droppable');
           columnMatch();
           rowMatch();
         }, time);
