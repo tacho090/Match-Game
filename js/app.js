@@ -113,6 +113,21 @@ $(document).ready(function(){
 
     });
   };
+
+  // function getOffset(el) {
+  //   const rect = el.getBoundingClientRect();
+  //   return {
+  //     left: rect.left + window.scrollX,
+  //     top: rect.top + window.scrollY
+  //   };
+  // };
+  //
+  // var position1 = getOffset($('.draggable')).left;
+  // var position2 = getOffset($('.draggable')).top;
+
+  // var rect = $('.draggable').getBoundingClientRect();
+  // console.log(rect.top, rect.right, rect.bottom, rect.left);
+
   drop('.draggable');
   // initDroppable('.draggable');
   // function initDroppable(elements) {
@@ -156,15 +171,23 @@ $(document).ready(function(){
       drop: function( event, ui ) {
         // let $this = $(this);
         let li1 = $(ui.draggable);
-        let aBefore = $('<div>').insertBefore(li1);
-        $(this).insertAfter(aBefore);
+        let pos1 = $(ui.draggable).position();
+        console.log(pos1);
+        // let aBefore = $('<div>').insertBefore(li1);
+        // $(this).insertAfter(aBefore);
 
         let li2 = $(this);
-        let bBefore = $('<div>').insertBefore(li2);
-        ui.draggable.insertAfter(bBefore);
+        let pos2 = $(this).position();
+        console.log(pos1);
 
-        aBefore.remove();
-        bBefore.remove();
+        $(li1).offset({top:pos2.top,left:pos2.left});
+        $(li2).offset({top:pos1.top,left:pos1.left});
+
+        // let bBefore = $('<div>').insertBefore(li2);
+        // ui.draggable.insertAfter(bBefore);
+
+        // aBefore.remove();
+        // bBefore.remove();
 
         // li1.remove();
         // li2.remove();
