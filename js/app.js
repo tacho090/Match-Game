@@ -17,6 +17,9 @@ $(document).ready(function(){
 
   //Fill columns
   var list = ['0', '1', '2', '3', '4', '5', '6'];
+  var iteration_time = 250;
+  var detach_time = 750;
+
 
   $('div.panel-tablero:first').attr('id', 'droppable');
   $('div.panel-tablero:first').addClass('ui-widget-content');
@@ -40,186 +43,63 @@ $(document).ready(function(){
   };
 
 
-  //Droppable element
-  //usar snap
-
-  //detect which element mouse is over
-  // setInterval(function(){
-  //   var element = $(':click');
-  //   if(element.length)
-  //   {
-  //     // var domElement = element[element.length - 1];
-  //     // var tagName = domElement.tagName;
-  //     // var id = domElement.id ? ' id="' + domElement.id + '"' : "";
-  //
-  //     // document.getElementById('test').innerHTML =
-  //     // "hover: &lt;" + tagName.toLowerCase() + id + "&gt;";
-  //
-  //     console.log(element);
-  //   }
-  // }, 100);
-
-  // $('img').on('mousedown', function(){
-  //   console.log('mouse down')
-  //   drop(this);
-  // });
+  //Drag and drop images
   var origin;
   $(document).mousedown(function(event){
-    console.log('mousedown on image');
     origin = $(event.target);
-    console.log(origin);
     drop(origin);
   });
 
-
-
-  // $('img').on('mouseup', function(){
-  //   console.log('mouse up')
-  //   drop(this);
-  // });
-
-
   function drag(){
     $(".draggable").draggable({
-                // appendTo: "body",
-                snap:'.draggable',
-                snapMode: 'inner',
-                // helper: "clone",
-                cursor: "move",
-                revert: "invalid"
-
-    // $( ".draggable" ).draggable({
-    //   // containment: "parent",
-    //   cursor: "move",
-    //   snap: '.draggable',
-    //   snapMode: "inner",
-    //   //axis: "x",
-    //   revert: true,
-    //   appendTo: "body"//onmouserelease var element $(:hover) = col
-      // classes: {
-      //   "ui-draggable": "highlight"
-      // }
-
-      // drag: function() {
-      //   counts[ 1 ]++;
-      //   updateCounterStatus( $drag_counter, counts[ 1 ] );
-      // }
-      // grid: [ 20, 20 ],
-    //   drag: function(event, ui) {
-    //     var leftPosition = ui.position.left;
-    //     if (leftPosition > maxMenuWidth) {
-    //       ui.position.left = maxMenuWidth;
-    // }
-
+      snap:'.draggable',
+      snapMode: 'inner',
+      cursor: "move",
+      revert: "invalid"
     });
   };
-
-  // function getOffset(el) {
-  //   const rect = el.getBoundingClientRect();
-  //   return {
-  //     left: rect.left + window.scrollX,
-  //     top: rect.top + window.scrollY
-  //   };
-  // };
-  //
-  // var position1 = getOffset($('.draggable')).left;
-  // var position2 = getOffset($('.draggable')).top;
-
-  // var rect = $('.draggable').getBoundingClientRect();
-  // console.log(rect.top, rect.right, rect.bottom, rect.left);
-
   drop('.draggable');
-  // initDroppable('.draggable');
-  // function initDroppable(elements) {
-  //     elements.droppable({
-  //         activeClass: "ui-state-default",
-  //         hoverClass: "ui-drop-hover",
-  //         accept: ".draggable",
-  //
-  //         // over: function(event, ui) {
-  //         //     var $this = $(this);
-  //         // },
-  //         drop: function(event, ui) {
-  //           console.log('dropped');
-  //             // var $this = $(this);
-  //             // var li1 = $('<li>' + ui.draggable.text() + '</li>')
-  //             // var linew1 = $(this).after(li1);
-  //             //
-  //             // var li2 = $('<li>' + $(this).text() + '</li>')
-  //             // var linew2 = $(ui.draggable).after(li2);
-  //             //
-  //             // $(ui.draggable).remove();
-  //             // $(this).remove();
-  //
-  //             initDroppable($(".draggable"));
-  //             $(".draggable").draggable({
-  //                 appendTo: "body",
-  //                 helper: "clone",
-  //                 cursor: "move",
-  //                 revert: "invalid"
-  //             });
-  //         }
-  //     });
-  // };
 
   function drop(img){
     console.log('entered drop function');
     let pos1 = $(img).position();
     $( ".droppable" ).droppable({
-      // activeClass: "ui-state-default",
-      // hoverClass: "ui-drop-hover",
-
       accept: ".draggable",
       drop: function( event, ui ) {
-        // let $this = $(this);
-        let li1 = $(ui.draggable);
-        console.log(pos1);
-        // let aBefore = $('<div>').insertBefore(li1);
-        // $(this).insertAfter(aBefore);
+        // let li1 = $(ui.draggable);
         let li2 = $(this);
-        let pos2 = $(this).position();
-        console.log(pos1);
+        // let pos2 = $(this).position();
+        let li1_src = $(img).attr('src');
+        let li2_src = li2.attr('src');
 
-        li2.offset({top:pos1.top,left:pos1.left});
-        li1.offset({top:pos2.top,left:pos2.left});
+        // li2.offset({top:pos1.top,left:pos1.left});
+        // li1.offset({top:pos2.top,left:pos2.left});
+        // setTimeout(function(){
+          $(img).attr('src', li2_src);
+          li2.attr('src', li1_src);
+        // }, 1000);
 
-        // let bBefore = $('<div>').insertBefore(li2);
-        // ui.draggable.insertAfter(bBefore);
-
-        // aBefore.remove();
-        // bBefore.remove();
-
-        // li1.remove();
-        // li2.remove();
+        // li2.replaceWith(li1);
+        // li1.replaceWith(li2);
 
         drop('.draggable');
+
         $(".draggable").draggable({
-          // appendTo: "body",
           snap:'.draggable',
           snapMode: 'inner',
-          // helper: "clone",
           cursor: "move",
           revert: "invalid"
         });
-
-        // ui.replaceWith($(this));
-        // $(this).replaceWith(ui);
-          // img.replaceWith($(this));
         console.log('dropped');
       }
     });
+    setTimeout(function(){
+      console.log('drop and entered columnMatch function');
+      drag();
+      columnMatch();
+      rowMatch();
+    }, detach_time);
   };
-
-  function swap(a, b) {
-    a = $(a); b = $(b);
-    var tmp = $('<span>').hide();
-    a.before(tmp);
-    b.before(a);
-    tmp.replaceWith(b);
-};
-
-
-
 
   //Fill
   function fill(){
@@ -265,7 +145,6 @@ $(document).ready(function(){
     for(var i = 0; i<list.length; i++){
       list[i].hide( time ,function(){
         addScore(score, false);
-        console.log("Animation complete");
       });
       setTimeout(function(){
         for(var i = 0; i<list.length; i++){
@@ -284,8 +163,6 @@ $(document).ready(function(){
 
 
 
-  var iteration_time = 250;
-  var detach_time = 750;
 
   //encontrar coincidencias en columnas
   function rowMatch(){
@@ -306,14 +183,11 @@ $(document).ready(function(){
           }
         }
         setTimeout(function(){
+          console.log('rowMatch');
           // pulse(detach_row_list);
           detach_function(detach_row_list);
         }, detach_time);
       }, iteration_time);
-      console.log("*".repeat(25) + "Rows" + "*".repeat(25));
-      console.log(detach_row_list);
-      console.log("*".repeat(50));
-      // addItems();
   };
 
 
@@ -334,14 +208,11 @@ $(document).ready(function(){
         }
       }
       setTimeout(function(){
+        console.log('columnMatch');
         // pulse(detach_column_list1);
         detach_function(detach_column_list);
       }, detach_time);
     }, iteration_time);
-    console.log("*".repeat(25) + "Columns" + "*".repeat(25));
-    console.log(detach_column_list);
-    console.log("*".repeat(50));
-    // addItems();
   };
 
 
@@ -364,7 +235,6 @@ $(document).ready(function(){
       $("img").attr({"width":"76%", "height":"97px"});
       $("img").addClass('draggable');
     // }, 8000);
-    console.log(difference_list);
     for( i = 0; i < difference_list.length; i++){
       if(difference_list[i] !== 0){
         setTimeout(function(){
@@ -373,14 +243,12 @@ $(document).ready(function(){
           rowMatch();
         }, time);
       }else{
-        console.log("all are equal to 0");
       }
     }
   };
 
   //Effect on .moves and .score after game ends
   function runEffect(){
-    console.log("entered function");
     var options = { to: { width: 1200, height: 185, direction: "ltr" } };
     $(".moves, .score").effect("scale", options , 2000);
     $(".moves, .score").animate({
@@ -404,7 +272,6 @@ $(document).ready(function(){
       $(".panel-score .score span").text(new_score.toString());
     }else{
       new_score = new_score + score;
-      console.log(new_score);
       $(".panel-score .score span").text(new_score.toString());
     }
   };
@@ -421,7 +288,6 @@ $(document).ready(function(){
         timer_text.text(number_0 + ':' + number_1.toString());
         number_1 = number_1 - 1;
         if(timer_text.text() == '00:0'){
-          console.log('se acabó el tiempo');
           $(".panel-tablero, .time").hide(2000);
           runEffect();
           timer.clear();
