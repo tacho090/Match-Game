@@ -164,24 +164,24 @@ $(document).ready(function(){
 
   function drop(img){
     console.log('entered drop function');
+    let pos1 = $(img).position();
     $( ".droppable" ).droppable({
       // activeClass: "ui-state-default",
       // hoverClass: "ui-drop-hover",
+
       accept: ".draggable",
       drop: function( event, ui ) {
         // let $this = $(this);
         let li1 = $(ui.draggable);
-        let pos1 = $(ui.draggable).position();
         console.log(pos1);
         // let aBefore = $('<div>').insertBefore(li1);
         // $(this).insertAfter(aBefore);
-
         let li2 = $(this);
         let pos2 = $(this).position();
         console.log(pos1);
 
-        $(li1).offset({top:pos2.top,left:pos2.left});
-        $(li2).offset({top:pos1.top,left:pos1.left});
+        li2.offset({top:pos1.top,left:pos1.left});
+        li1.offset({top:pos2.top,left:pos2.left});
 
         // let bBefore = $('<div>').insertBefore(li2);
         // ui.draggable.insertAfter(bBefore);
