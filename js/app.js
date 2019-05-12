@@ -1,5 +1,14 @@
 $(document).ready(function(){
 
+  //Variables
+  var list = ['0', '1', '2', '3', '4', '5', '6'];
+  var iteration_time = 250;
+  var detach_time = 750;
+  var new_score = 0;
+  var movimientos = 0;
+  var detach_col_1, detach_col_2, detach_col_3, detach_row_1, detach_row_2, detach_row_3;
+
+
   //Flashing text
   function startBlinking(){
     setInterval(function () {
@@ -13,13 +22,8 @@ $(document).ready(function(){
     },500);
   }
   startBlinking();
-  //
 
   //Fill columns
-  var list = ['0', '1', '2', '3', '4', '5', '6'];
-  var iteration_time = 250;
-  var detach_time = 750;
-
 
   $('div.panel-tablero:first').attr('id', 'droppable');
   $('div.panel-tablero:first').addClass('ui-widget-content');
@@ -58,7 +62,6 @@ $(document).ready(function(){
       revert: "invalid"
     });
   };
-  drop('.draggable');
 
   function drop(img){
     console.log('entered drop function');
@@ -66,31 +69,19 @@ $(document).ready(function(){
     $( ".droppable" ).droppable({
       accept: ".draggable",
       drop: function( event, ui ) {
-        // let li1 = $(ui.draggable);
+        let li1 = $(ui.draggable);
         let li2 = $(this);
-        // let pos2 = $(this).position();
+        let pos2 = $(this).position();
         let li1_src = $(img).attr('src');
         let li2_src = li2.attr('src');
 
-        // li2.offset({top:pos1.top,left:pos1.left});
-        // li1.offset({top:pos2.top,left:pos2.left});
-        // setTimeout(function(){
+        li2.offset({top:pos1.top,left:pos1.left});
+        li1.offset({top:pos2.top,left:pos2.left});
+        setTimeout(function(){
+          console.log('settimeout');
           $(img).attr('src', li2_src);
           li2.attr('src', li1_src);
-        // }, 1000);
-
-        // li2.replaceWith(li1);
-        // li1.replaceWith(li2);
-
-        drop('.draggable');
-
-        $(".draggable").draggable({
-          snap:'.draggable',
-          snapMode: 'inner',
-          cursor: "move",
-          revert: "invalid"
-        });
-        console.log('dropped');
+        }, 1000);
       }
     });
     setTimeout(function(){
@@ -119,26 +110,29 @@ $(document).ready(function(){
   //
 
 
-  var detach_col_1, detach_col_2, detach_col_3, detach_row_1, detach_row_2, detach_row_3;
-
+  //Pulse
   function pulse(div){
+    let time = 125;
     function startpulse(){
       setInterval(function () {
         pulsation(div);
-      }, 500);
+      }, time);
     }
-    let toggle = 500;
+    let toggle = time*2;
     function pulsation(div) {
+      //   console.log('pulse\n');
       div.fadeToggle(toggle);
       pulse;
       setTimeout(function(){
         div.fadeToggle(toggle);
         pulse;
-      },250);
+      },time);
     }
     startpulse();
   }
 
+
+  //Detach function
   function detach_function(list){
     let time = 500;
     let score = 20;
@@ -161,10 +155,7 @@ $(document).ready(function(){
   Timer_panel(true);
 
 
-
-
-
-  //encontrar coincidencias en columnas
+  //encontrar coincidencias en filas
   function rowMatch(){
     let detach_row_list = [];
       setTimeout(function(){
@@ -178,13 +169,12 @@ $(document).ready(function(){
               detach_row_2 = $(".col-" + (j+1).toString() + " img:nth-child(" + i.toString() + ")");
               detach_row_3 = $(".col-" + (j-1).toString() + " img:nth-child(" + i.toString() + ")");
               detach_row_list.push(detach_row_1, detach_row_2, detach_row_3);
-              // pulse(detach_row_1, detach_row_2, detach_row_3);
+              //ulse(detach_row_list);
             }
           }
         }
         setTimeout(function(){
-          console.log('rowMatch');
-          // pulse(detach_row_list);
+          pulse(detach_row_list);
           detach_function(detach_row_list);
         }, detach_time);
       }, iteration_time);
@@ -203,13 +193,12 @@ $(document).ready(function(){
             detach_col_2 = $(".col-" + j.toString() + " img:nth-child(" + (i+1).toString() + ")");
             detach_col_3 = $(".col-" + j.toString() + " img:nth-child(" + (i-1).toString() + ")");
             detach_column_list.push(detach_col_1, detach_col_2, detach_col_3);
-            // pulse(detach_col_1, detach_col_2, detach_col_3);
+            //pulse(detach_column_list);
           }
         }
       }
       setTimeout(function(){
-        console.log('columnMatch');
-        // pulse(detach_column_list1);
+        pulse(detach_column_list);
         detach_function(detach_column_list);
       }, detach_time);
     }, iteration_time);
@@ -239,6 +228,7 @@ $(document).ready(function(){
       if(difference_list[i] !== 0){
         setTimeout(function(){
           drag();
+          drop('.draggable');
           columnMatch();
           rowMatch();
         }, time);
@@ -263,9 +253,7 @@ $(document).ready(function(){
   }
   //
 
-  var new_score = 0;
-  var movimientos = 0;
-
+  //Add score
   function addScore(score, reinicio){
     if(reinicio){
       new_score = 0;
