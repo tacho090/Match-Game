@@ -168,7 +168,7 @@ $(document).ready(function(){
         let center = $(".col-" + j.toString() + " img:nth-child(" + i.toString() + ")").attr("src");
         let previous = $(".col-" + (j-1).toString() + " img:nth-child(" + i.toString() + ")").attr("src");
         let next = $(".col-" + (j+1).toString() + " img:nth-child(" + i.toString() + ")").attr("src");
-        if(center == previous && center == next){
+        if(center === previous && center === next){
           detach_row_1 = $(".col-" + j.toString() + " img:nth-child(" + i.toString() + ")");
           detach_row_2 = $(".col-" + (j+1).toString() + " img:nth-child(" + i.toString() + ")");
           detach_row_3 = $(".col-" + (j-1).toString() + " img:nth-child(" + i.toString() + ")");
@@ -186,11 +186,13 @@ $(document).ready(function(){
   function columnMatch(){
     let detach_column_list = [];
     for(var j = 1 ; j<8; j++){
+      console.log('col-' + j.toString());
       for(var i = 2; i<7; i++){
+        console.log('col-' + j.toString() + ' row ' + i.toString());
         let center = $(".col-" + j.toString() + " img:nth-child(" + i.toString() + ")").attr("src");
         let previous = $(".col-" + j.toString() + " img:nth-child(" + (i-1).toString() + ")").attr("src");
         let next = $(".col-" + j.toString() + " img:nth-child(" + (i+1).toString() + ")").attr("src");
-        if(center == previous && center == next){
+        if(center === previous && center === next){
           detach_col_1 = $(".col-" + j.toString() + " img:nth-child(" + i.toString() + ")");
           detach_col_2 = $(".col-" + j.toString() + " img:nth-child(" + (i-1).toString() + ")");
           detach_col_3 = $(".col-" + j.toString() + " img:nth-child(" + (i+1).toString() + ")");
@@ -205,7 +207,6 @@ $(document).ready(function(){
         addItems();
       }, total_time*1.2);
     }, total_time/2);
-
   };
 
   //add new items
@@ -218,14 +219,15 @@ $(document).ready(function(){
           for(var j = 0; j<children_add; j++){
             $('.col-' + i.toString()).prepend("<img id='theImg' src='image/" + (Math.floor((Math.random() * 4) + 1)).toString() + ".png/'>");
           }
-          $("img").attr({"width":"76%", "height":"97px"});
-          $("img").addClass('draggable');
-          $("img").addClass('droppable');
-          drag();
-          columnMatch();
-          rowMatch();
+
         }
       }
+      $("img").attr({"width":"76%", "height":"97px"});
+      $("img").addClass('draggable');
+      $("img").addClass('droppable');
+      drag();
+      columnMatch();
+      rowMatch();
   };
 
   //Effect on .moves and .score after game ends
@@ -260,7 +262,6 @@ $(document).ready(function(){
       var number_0 = '01';
       var number_1 = 59;
       timer.bind(1000 * 1, function () {
-        console.log(number_1);
         timer_text.text(number_0 + ':' + number_1.toString());
         number_1 = number_1 - 1;
         if(timer_text.text() == '00:0'){
