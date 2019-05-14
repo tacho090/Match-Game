@@ -69,7 +69,7 @@ $(document).ready(function(){
       snap:'.draggable',
       snapMode: 'inner',
       cursor: "move",
-      revert: "invalid"
+      revert: "true"
     });
   };
 
@@ -177,10 +177,10 @@ $(document).ready(function(){
         }
       }
     }
-    // pulse_row(detach_row_list);
+    pulse_row(detach_row_list);
     setTimeout(function(){
       detach_function_row(detach_row_list);
-    }, total_time/2);
+    }, total_time-1);
   };
 
   //encontrar coincidencias en columnas
@@ -201,13 +201,13 @@ $(document).ready(function(){
         }
       }
     }
-    // pulse_col(detach_column_list);
+    pulse_col(detach_column_list);
     setTimeout(function(){
       detach_function_column(detach_column_list);
       setTimeout(function(){
         addItems();
       }, total_time/2);
-    }, total_time/2);
+    }, total_time-1);
   };
 
   //add new items
