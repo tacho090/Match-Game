@@ -45,6 +45,9 @@ $(document).ready(function(){
       rowMatch();
       addScore(0, true);
       Timer_panel(false);
+      number_movimientos = 0;
+      movimientos_text.text((number_movimientos).toString());
+
     }
   });
 
@@ -72,6 +75,7 @@ $(document).ready(function(){
   //Droppable
   function drop(img){
     let pos1 = $(img).position();
+    let src1 = $(img).attr('src');
     $( ".droppable" ).droppable({
       accept: ".draggable",
       drop: function( event, ui ) {
@@ -82,8 +86,8 @@ $(document).ready(function(){
 
         //set attr
         $(img).attr('src', $(this).attr('src'));
-        $(this).attr('src', li1_src);
-        
+        $(this).attr('src', src1);
+
       }
     });
       drag();
@@ -138,7 +142,7 @@ $(document).ready(function(){
   //Detach function
   function detach_function_row(list){
     for(var i = 0; i<list.length; i++){
-      list[i].hide(total_time, function(){
+      list[i].hide(total_time/8, function(){
         $(this).detach();
         addScore(score, false);
       });
@@ -149,7 +153,7 @@ $(document).ready(function(){
   //Detach function
   function detach_function_column(list){
     for(var i = 0; i<list.length; i++){
-      list[i].hide(total_time, function(){
+      list[i].hide(total_time/8, function(){
         $(this).detach();
       });
     };
@@ -182,9 +186,9 @@ $(document).ready(function(){
   function columnMatch(){
     let detach_column_list = [];
     for(var j = 1 ; j<8; j++){
-      console.log('col-' + j.toString());
+      // console.log('col-' + j.toString());
       for(var i = 2; i<7; i++){
-        console.log('col-' + j.toString() + ' row ' + i.toString());
+        // console.log('col-' + j.toString() + ' row ' + i.toString());
         let center = $(".col-" + j.toString() + " img:nth-child(" + i.toString() + ")").attr("src");
         let previous = $(".col-" + j.toString() + " img:nth-child(" + (i-1).toString() + ")").attr("src");
         let next = $(".col-" + j.toString() + " img:nth-child(" + (i+1).toString() + ")").attr("src");
@@ -201,7 +205,7 @@ $(document).ready(function(){
       detach_function_column(detach_column_list);
       setTimeout(function(){
         addItems();
-      }, total_time*1.2);
+      }, total_time/2);
     }, total_time/2);
   };
 
