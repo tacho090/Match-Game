@@ -5,7 +5,7 @@ $(document).ready(function(){
   var new_score = 0;
   var movimientos = 0;
   var detach_col_1, detach_col_2, detach_col_3, detach_row_1, detach_row_2, detach_row_3;
-  var total_time = 4000;
+  var total_time = 3000;
   var timer = new Timer('1000 miliseconds');
   var timer_text = $('#timer');
   var movimientos_text = $('#movimientos-text');
@@ -108,7 +108,6 @@ $(document).ready(function(){
 
   //Pulse columns
   function pulse_col(div){
-    console.log('pulse col');
       function pulsation(){
         for(var i = 0; i<div.length; i++){
           div[i].fadeToggle(total_time/16);
@@ -117,12 +116,10 @@ $(document).ready(function(){
       setInterval(function(){
          pulsation();
        }, total_time/8);
-    console.log('pulse col end');
   };
 
   //Pulse rows
   function pulse_row(div){
-    console.log('pulse row');
 
     function pulsation(){
       for(var i = 0; i<div.length; i++){
@@ -133,7 +130,6 @@ $(document).ready(function(){
        pulsation();
      }, total_time/8);
 
-    console.log('pulse row end');
   };
 
   //Detach function
@@ -144,17 +140,15 @@ $(document).ready(function(){
         addScore(score, false);
       });
     };
-    console.log('rows detached');
   };
 
   //Detach function
   function detach_function_column(list){
     for(var i = 0; i<list.length; i++){
-      list[i].hide(total_time/8, function(){
+      list[i].hide(total_time/6, function(){
         $(this).detach();
       });
     };
-    console.log('columns detached');
   };
 
   //encontrar coincidencias en filas
@@ -176,7 +170,7 @@ $(document).ready(function(){
     pulse_row(detach_row_list);
     setTimeout(function(){
       detach_function_row(detach_row_list);
-    }, total_time-1);
+    }, total_time/3);
   };
 
   //encontrar coincidencias en columnas
@@ -202,13 +196,12 @@ $(document).ready(function(){
       detach_function_column(detach_column_list);
       setTimeout(function(){
         addItems();
-      }, total_time/2);
-    }, total_time-1);
+      }, total_time/3);
+    }, total_time/3);
   };
 
   //add new items
   function addItems(){
-    console.log('add items');
       for(var i = 1; i<8; i++){
         if($(".col-" + i.toString()).children().length < 7){
           let children = $(".col-" + i.toString()).children().length;
@@ -228,6 +221,8 @@ $(document).ready(function(){
 
   //Effect on .moves and .score after game ends
   function runEffect(){
+    let final_score = new_score;
+    $(".panel-score .score span").text(final_score.toString());
     var options = { to: { width: 1200, height: 185, direction: "ltr" } };
     $(".moves, .score").effect("scale", options , 2000);
     $(".moves, .score").animate({
