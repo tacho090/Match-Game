@@ -59,7 +59,8 @@ $(document).ready(function(){
   //Drag and drop images
   $(document).mousedown(function(event){
     origin = $(event.target);
-    drop(origin);
+    var source = origin.attr('src');
+    drop(origin, source);
   });
 
   //Draggable attr
@@ -73,7 +74,7 @@ $(document).ready(function(){
   };
 
   //Droppable
-  function drop(img){
+  function drop(img, source){
     let pos1 = $(img).position();
     let src1 = $(img).attr('src');
     $( ".droppable" ).droppable({
@@ -86,7 +87,7 @@ $(document).ready(function(){
 
         //set attr
         $(img).attr('src', $(this).attr('src'));
-        $(this).attr('src', src1);
+        $(this).attr('src', source);
 
       }
     });
