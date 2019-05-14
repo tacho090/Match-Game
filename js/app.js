@@ -13,11 +13,6 @@ $(document).ready(function(){
   var score = 20;
   var origin;
 
-
-  // //Fill columns
-  // $('div.panel-tablero:first').attr('id', 'droppable');
-  // $('div.panel-tablero:first').addClass('ui-widget-content');
-
   //Flashing text
   function startBlinking(){
     setInterval(function () {
@@ -71,6 +66,7 @@ $(document).ready(function(){
       cursor: "move",
       revert: "true"
     });
+    $(".draggable").draggable("option", "revert", true);
   };
 
   //Droppable
