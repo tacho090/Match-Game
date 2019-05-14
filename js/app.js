@@ -77,17 +77,13 @@ $(document).ready(function(){
       drop: function( event, ui ) {
         number_movimientos = number_movimientos + 1;
         movimientos_text.text((number_movimientos).toString());
-        let li1 = $(ui.draggable);
-        let li2 = $(this);
-        let pos2 = $(this).position();
+        //store attr
         let li1_src = $(img).attr('src');
-        let li2_src = li2.attr('src');
-        li2.offset({top:pos1.top,left:pos1.left});
-        li1.offset({top:pos2.top,left:pos2.left});
-        // setTimeout(function(){
-        $(img).attr('src', li2_src);
-        li2.attr('src', li1_src);
-        // }, total_time/4);
+
+        //set attr
+        $(img).attr('src', $(this).attr('src'));
+        $(this).attr('src', li1_src);
+        
       }
     });
       drag();
@@ -219,7 +215,6 @@ $(document).ready(function(){
           for(var j = 0; j<children_add; j++){
             $('.col-' + i.toString()).prepend("<img id='theImg' src='image/" + (Math.floor((Math.random() * 4) + 1)).toString() + ".png/'>");
           }
-
         }
       }
       $("img").attr({"width":"76%", "height":"97px"});
