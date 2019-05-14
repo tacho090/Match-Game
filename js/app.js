@@ -2,23 +2,21 @@ $(document).ready(function(){
 
   //Variables
   var list = ['0', '1', '2', '3', '4', '5', '6'];
-  var iteration_time = 100;
-  var detach_time = 3000;
-  var pulse_time = 100;
   var new_score = 0;
   var movimientos = 0;
   var detach_col_1, detach_col_2, detach_col_3, detach_row_1, detach_row_2, detach_row_3;
-  var total_time = 1000;
+  var total_time = 4000;
   var timer = new Timer('1000 miliseconds');
   var timer_text = $('#timer');
   var movimientos_text = $('#movimientos-text');
   var number_movimientos = 0;
+  var score = 20;
+  var origin;
 
 
-
-  //Fill columns
-  $('div.panel-tablero:first').attr('id', 'droppable');
-  $('div.panel-tablero:first').addClass('ui-widget-content');
+  // //Fill columns
+  // $('div.panel-tablero:first').attr('id', 'droppable');
+  // $('div.panel-tablero:first').addClass('ui-widget-content');
 
   //Flashing text
   function startBlinking(){
@@ -56,7 +54,6 @@ $(document).ready(function(){
   };
 
   //Drag and drop images
-  var origin;
   $(document).mousedown(function(event){
     origin = $(event.target);
     drop(origin);
@@ -87,18 +84,15 @@ $(document).ready(function(){
         let li2_src = li2.attr('src');
         li2.offset({top:pos1.top,left:pos1.left});
         li1.offset({top:pos2.top,left:pos2.left});
-        setTimeout(function(){
-          console.log('settimeout');
-          $(img).attr('src', li2_src);
-          li2.attr('src', li1_src);
-        }, 1000);
+        // setTimeout(function(){
+        $(img).attr('src', li2_src);
+        li2.attr('src', li1_src);
+        // }, total_time/4);
       }
     });
-    setTimeout(function(){
       drag();
       columnMatch();
       rowMatch();
-    }, detach_time);
   };
 
   //Fill
@@ -112,123 +106,126 @@ $(document).ready(function(){
     $("img").attr({"width":"76%", "height":"97px"});
     $("img").addClass('draggable');
     $('img').addClass('droppable');
-  }
+    drag();
+  };
 
-  //Pulse
-  function pulse(div){
-    let time = 500;
-    function startpulse(){
-      setInterval(function () {
-        pulsation(div);
-      }, time);
-    }
-    let toggle = time/4;
-    function pulsation(div) {
+  //Pulse columns
+  function pulse_col(div){
+    console.log('pulse col');
+      function pulsation(){
+        for(var i = 0; i<div.length; i++){
+          div[i].fadeToggle(total_time/16);
+        };
+      };
+      setInterval(function(){
+         pulsation();
+       }, total_time/8);
+    console.log('pulse col end');
+  };
+
+  //Pulse rows
+  function pulse_row(div){
+    console.log('pulse row');
+
+    function pulsation(){
       for(var i = 0; i<div.length; i++){
-        div[i].fadeToggle(toggle);
-      }
-    }
-    startpulse();
-  }
+        div[i].fadeToggle(total_time/16);
+      };
+    };
+    setInterval(function(){
+       pulsation();
+     }, total_time/8);
+
+    console.log('pulse row end');
+  };
 
   //Detach function
-  function detach_function(list){
-    let time = 2000;
-    let score = 20;
+  function detach_function_row(list){
     for(var i = 0; i<list.length; i++){
-      list[i].hide( time ,function(){
-        for(var i = 0; i<list.length; i++){
-          list[i].detach();
-        }
+      list[i].hide(total_time, function(){
+        $(this).detach();
         addScore(score, false);
       });
-    }
-    setTimeout(function(){
-      addItems();
-    }, time * 1.5);
-  }
+    };
+    console.log('rows detached');
+  };
+
+  //Detach function
+  function detach_function_column(list){
+    for(var i = 0; i<list.length; i++){
+      list[i].hide(total_time, function(){
+        $(this).detach();
+      });
+    };
+    console.log('columns detached');
+  };
 
   //encontrar coincidencias en filas
   function rowMatch(){
     let detach_row_list = [];
-      setTimeout(function(){
-        for(var i = 1; i<8; i++){//filas
-          for(var j = 2; j<7; j++){//columnas
-            let center = $(".col-" + j.toString() + " img:nth-child(" + i.toString() + ")").attr("src");
-            let previous = $(".col-" + (j-1).toString() + " img:nth-child(" + i.toString() + ")").attr("src");
-            let next = $(".col-" + (j+1).toString() + " img:nth-child(" + i.toString() + ")").attr("src");
-            if(center == previous && center == next){
-              detach_row_1 = $(".col-" + j.toString() + " img:nth-child(" + i.toString() + ")");
-              detach_row_2 = $(".col-" + (j+1).toString() + " img:nth-child(" + i.toString() + ")");
-              detach_row_3 = $(".col-" + (j-1).toString() + " img:nth-child(" + i.toString() + ")");
-              detach_row_list.push(detach_row_1, detach_row_2, detach_row_3);
-            }
-          }
+    for(var i = 1; i<8; i++){//filas
+      for(var j = 2; j<7; j++){//columnas
+        let center = $(".col-" + j.toString() + " img:nth-child(" + i.toString() + ")").attr("src");
+        let previous = $(".col-" + (j-1).toString() + " img:nth-child(" + i.toString() + ")").attr("src");
+        let next = $(".col-" + (j+1).toString() + " img:nth-child(" + i.toString() + ")").attr("src");
+        if(center == previous && center == next){
+          detach_row_1 = $(".col-" + j.toString() + " img:nth-child(" + i.toString() + ")");
+          detach_row_2 = $(".col-" + (j+1).toString() + " img:nth-child(" + i.toString() + ")");
+          detach_row_3 = $(".col-" + (j-1).toString() + " img:nth-child(" + i.toString() + ")");
+          detach_row_list.push(detach_row_1, detach_row_2, detach_row_3);
         }
-        setTimeout(function(){
-          pulse(detach_row_list);
-          setTimeout(function(){
-            detach_function(detach_row_list);
-          }, detach_time);
-        }, pulse_time);
-      }, iteration_time);
+      }
+    }
+    // pulse_row(detach_row_list);
+    setTimeout(function(){
+      detach_function_row(detach_row_list);
+    }, total_time/2);
   };
 
   //encontrar coincidencias en columnas
   function columnMatch(){
     let detach_column_list = [];
-    setTimeout(function(){
-      for(var j = 1 ; j<8; j++){
-        for(var i = 2; i<7; i++){
-          if($(".col-" + j.toString() + " img:nth-child(" + i.toString() + ")").attr("src") == $(".col-" + j.toString() + " img:nth-child(" + (i+1).toString() + ")").attr("src") && $(".col-" + j.toString() + " img:nth-child(" + i.toString() + ")").attr("src") == $(".col-" + j.toString() + " img:nth-child(" + (i-1).toString() + ")").attr("src")){
-            detach_col_1 = $(".col-" + j.toString() + " img:nth-child(" + i.toString() + ")");
-            detach_col_2 = $(".col-" + j.toString() + " img:nth-child(" + (i+1).toString() + ")");
-            detach_col_3 = $(".col-" + j.toString() + " img:nth-child(" + (i-1).toString() + ")");
-            detach_column_list.push(detach_col_1, detach_col_2, detach_col_3);
-          }
+    for(var j = 1 ; j<8; j++){
+      for(var i = 2; i<7; i++){
+        let center = $(".col-" + j.toString() + " img:nth-child(" + i.toString() + ")").attr("src");
+        let previous = $(".col-" + j.toString() + " img:nth-child(" + (i-1).toString() + ")").attr("src");
+        let next = $(".col-" + j.toString() + " img:nth-child(" + (i+1).toString() + ")").attr("src");
+        if(center == previous && center == next){
+          detach_col_1 = $(".col-" + j.toString() + " img:nth-child(" + i.toString() + ")");
+          detach_col_2 = $(".col-" + j.toString() + " img:nth-child(" + (i-1).toString() + ")");
+          detach_col_3 = $(".col-" + j.toString() + " img:nth-child(" + (i+1).toString() + ")");
+          detach_column_list.push(detach_col_1, detach_col_2, detach_col_3);
         }
       }
+    }
+    // pulse_col(detach_column_list);
+    setTimeout(function(){
+      detach_function_column(detach_column_list);
       setTimeout(function(){
-        pulse(detach_column_list);
-        setTimeout(function(){
-          detach_function(detach_column_list);
-        }, detach_time);
-      }, pulse_time);
-    }, iteration_time);
+        addItems();
+      }, total_time*1.2);
+    }, total_time/2);
+
   };
 
   //add new items
   function addItems(){
-    let time = 250;
-    let difference = 0;
-    let difference_list = [];
-    // setTimeout(function(){
+    console.log('add items');
       for(var i = 1; i<8; i++){
         if($(".col-" + i.toString()).children().length < 7){
-          let resta = $(".col-" + i.toString()).children().length;
-          difference = 7 - resta;
-          difference_list.push(difference);
-          for(var j = 0; j<difference; j++){
+          let children = $(".col-" + i.toString()).children().length;
+          let children_add = 7 - children;
+          for(var j = 0; j<children_add; j++){
             $('.col-' + i.toString()).prepend("<img id='theImg' src='image/" + (Math.floor((Math.random() * 4) + 1)).toString() + ".png/'>");
           }
-        }
-      }
-      $("img").attr({"width":"76%", "height":"97px"});
-      $("img").addClass('draggable');
-    // }, 8000);
-    for( i = 0; i < difference_list.length; i++){
-      if(difference_list[i] !== 0){
-        setTimeout(function(){
-          // drag();
-          // drop('.draggable');
+          $("img").attr({"width":"76%", "height":"97px"});
           $("img").addClass('draggable');
-          $('img').addClass('droppable');
+          $("img").addClass('droppable');
+          drag();
           columnMatch();
           rowMatch();
-        }, time);
-      }else{
+        }
       }
-    }
   };
 
   //Effect on .moves and .score after game ends
@@ -263,7 +260,7 @@ $(document).ready(function(){
       var number_0 = '01';
       var number_1 = 59;
       timer.bind(1000 * 1, function () {
-        // console.log(number_1);
+        console.log(number_1);
         timer_text.text(number_0 + ':' + number_1.toString());
         number_1 = number_1 - 1;
         if(timer_text.text() == '00:0'){
@@ -287,7 +284,6 @@ $(document).ready(function(){
   //Executable functions
   startBlinking();
   fill();
-  drag();
   columnMatch();
   rowMatch();
   Timer_panel(true);
